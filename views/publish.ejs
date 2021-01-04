@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <h1>
+    <%= title %>
+  </h1>
+  <p>EJS Welcome to
+    <%= title %>
+  </p>
+  <form action="/publish/article" method="POST">
+    <div>文章</div>
+    <div>
+      <label for="title">
+        标题：
+        <input type="text" id="title" name="title">
+      </label>
+    </div>
+    <br />
+    <label for="article">内容：</label>
+    <textarea
+      id="article"
+      name="article"
+      rows="3"
+      cols="20"
+      placheholder="请输入文章内容"
+    ></textarea>
+    <div>
+      <label for="captcha">验证码：</label>
+      <input id="captcha" type="text" name="captcha">
+      <img id="captchaImg" onclick="getCaptcha()" src="/publish/captcha" />
+    </div>
+    <div>
+      <button type="submit">发布文章</button>
+    </div>
+  </form>
+
+  <script type="text/javascript">
+    const captchaImg = document.querySelector('#captchaImg')
+    // svg转img
+    const svgToImg = (svgString) => {
+      const svg = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const DOMURL = self.URL || self.webkitURL || self;
+      const url = DOMURL.createObjectURL(svg)
+      return url
+    }
+
+    const getCaptcha = function() {
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', '/publish/captcha')
+      xhr.onreadystatechange = function() {
+        if (this.status === 200 && this.readyState === 4) {
+          captchaImg.src = svgToImg(xhr.responseText)
+        }
+      }
+      xhr.send(null)
+    }
+  </script>
+</body>
+
+</html>
